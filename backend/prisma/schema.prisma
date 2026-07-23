@@ -19,20 +19,25 @@ enum JobStatus {
   FAILED
 }
 
-model Thumbnail {
-  id        String   @id @default(uuid())
-  imageUrl  String
-  prompt    String
-  jobId     String   @unique
-  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+model Job {
+  id       String    @id @default(uuid())
+  prompt   String
+  imageUrl String
+  status   JobStatus @default(PENDING)
+
+  thumbnail Thumbnail?
+
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Job {
-  id        String      @id @default(uuid())
-  prompt    String
-  status    String      @default("pending")
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  thumbnail Thumbnail[]
+model Thumbnail {
+  id       String @id @default(uuid())
+  imageUrl String
+  prompt   String
+
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 }

@@ -20,7 +20,15 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: redis_insight
+    ports:
+      - "5540:5540"
+    volumes:
+      - insight_data:/data
 
 volumes:
   postgres_data:
   redis_data:
+  insight_data:

@@ -1,5 +1,5 @@
 import "dotenv/config";
 
-import "./workers/thumbnail.worker";
+import "./workers/thumbnail.worker.js";
 
-console.log("🚀 Worker Started");
+console.log("Thumbnail worker started");

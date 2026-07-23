@@ -1,5 +1,6 @@
 import { Worker } from "bullmq";
-import redis from "../config/redis";
+import { ThumbnailService } from "../services/thumbnail.service.js";
+import redis from "../config/redis.js";
 
 export const thumbnailWorker = new Worker(
   "thumbnail",
@@ -10,7 +11,7 @@ export const thumbnailWorker = new Worker(
     console.log(job.name);
     console.log(job.data);
 
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await ThumbnailService.process(job.data.jobId);
 
     console.log("Job Finished");
   },
