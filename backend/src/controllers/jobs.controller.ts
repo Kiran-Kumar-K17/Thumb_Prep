@@ -24,7 +24,7 @@ export class JobsController {
       }
 
       // Upload original image to ImageKit
-      const uploadedImage = await ImageKitService.upload(file);
+      const uploadedImage = await ImageKitService.uploadOriginal(file);
 
       // Create Job
       const job = await JobService.create({

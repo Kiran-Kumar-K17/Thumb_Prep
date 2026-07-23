@@ -1,4 +1,4 @@
-import { prisma, JobStatus } from "../config/prisma";
+import { prisma, JobStatus } from "../config/prisma.js";
 
 export class JobService {
   static async create(data: { prompt: string; imageUrl: string }) {

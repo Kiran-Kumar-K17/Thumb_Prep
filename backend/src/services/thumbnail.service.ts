@@ -1,4 +1,6 @@
-import { JobStatus } from "../../generated/prisma/client";
+import { prisma, JobStatus } from "../config/prisma.js";
+import { ImageKitService } from "./imagekit.service.js";
+import { GeminiService } from "./gemini.service.js";
 import { JobService } from "./jobs.service.js";
 
 export class ThumbnailService {
@@ -14,8 +16,17 @@ export class ThumbnailService {
 
       console.log(`Processing thumbnail for job: ${jobId}`);
 
-      // Simulate long-running work
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      const image = await ImageKitService.downloadImage(job.imageUrl);
+
+      const generated = await GeminiService.generateThumbnail(
+        image,
+        "image/jpeg",
+        job.prompt,
+      );
+
+      const uploaded = await ImageKitService.uploadThumbnail(generated);
+
+      await ThumbnailService.create(job.id, uploaded.url, job.prompt);
 
       await JobService.updateStatus(jobId, JobStatus.COMPLETED);
 
@@ -24,7 +35,17 @@ export class ThumbnailService {
       await JobService.fail(jobId);
 
       console.error(error);
-      throw error;
+      throw error;  
     }
+  }
+
+  static async create(jobId: string, imageUrl: string, prompt: string) {
+    return prisma.thumbnail.create({
+      data: {
+        jobId,
+        imageUrl,
+        prompt,
+      },
+    });
   }
 }
